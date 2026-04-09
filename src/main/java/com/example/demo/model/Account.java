@@ -7,10 +7,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
 @Entity
-@Data
 @Table(name = "account")
 public class Account {
 
@@ -21,7 +19,7 @@ public class Account {
 	@NotBlank
 	@Column(name = "last_name")
 	private String lastName;
-	
+
 	@NotBlank
 	@Column(name = "first_name")
 	private String firstName;
@@ -72,17 +70,15 @@ public class Account {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	
+
 	public Account() {
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	public Account(String lastName, String firstName, String email) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.email = email;
 	}
-	
-	
 
 }
