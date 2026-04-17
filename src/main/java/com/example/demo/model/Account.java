@@ -1,5 +1,7 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -7,10 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
 
 @Entity
-@Data
 @Table(name = "account")
 public class Account {
 
@@ -21,7 +21,7 @@ public class Account {
 	@NotBlank
 	@Column(name = "last_name")
 	private String lastName;
-	
+
 	@NotBlank
 	@Column(name = "first_name")
 	private String firstName;
@@ -32,6 +32,19 @@ public class Account {
 
 	@Column(name = "deleted")
 	private boolean deleted;
+
+	@NotBlank
+	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+	@Column(name = "password")
+	private String password;
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 	public long getId() {
 		return id;
@@ -72,17 +85,15 @@ public class Account {
 	public void setDeleted(boolean deleted) {
 		this.deleted = deleted;
 	}
-	
+
 	public Account() {
-		// TODO Auto-generated constructor stub
 	}
-	
-	public Account(String lastName, String firstName, String email) {
+
+	public Account(String lastName, String firstName, String email, String password) {
 		this.lastName = lastName;
 		this.firstName = firstName;
 		this.email = email;
+		this.password = password;
 	}
-	
-	
 
 }
