@@ -4,28 +4,19 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.antlr.v4.runtime.misc.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.CollectionUtils;
-import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Account;
 import com.example.demo.repository.AccountRepository;
-
-import jakarta.validation.constraints.Min;
-import jakarta.websocket.server.PathParam;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import com.example.demo.service.AccountService;
 
 @RestController
 @RequestMapping("/users")
@@ -33,6 +24,8 @@ public class AccountController {
 
 	@Autowired
 	private AccountRepository accountRepository;
+	@Autowired
+	private AccountService accountService;
 
 	@GetMapping
 	public ResponseEntity<List<Account>> getUsers() {
@@ -48,10 +41,10 @@ public class AccountController {
 	@PostMapping
 	public ResponseEntity<Account> addAccount(@RequestBody final Account account) {
 
-		final Account exisingAccount = accountRepository.findByEmail(account.getEmail());
+		final Account exisingAccount = accountRepository.findFirstByEmailIgnoreCase(account.getEmail());
 
 		if (Objects.isNull(exisingAccount)) {
-			final Account createdAccount = accountRepository.save(account);
+			final Account createdAccount = accountService.create(account);
 			return new ResponseEntity<>(createdAccount, HttpStatus.CREATED);
 		}
 
@@ -75,15 +68,14 @@ public class AccountController {
 	public ResponseEntity<Account> updateAccount(@PathVariable("id") final Long accountId,
 			@RequestBody final Account account) {
 
-		final Optional<Account> exisingAccountOptional = accountRepository.findById(accountId);
+		final Optional<Account> updatedAccountOptional = accountService.update(accountId, account);
 
-		if (exisingAccountOptional.isPresent()) {
+		if (updatedAccountOptional.isPresent()) {
 			final Account updatedAccount = accountRepository.save(account);
 			return new ResponseEntity<>(updatedAccount, HttpStatus.OK);
 		}
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
 	}
 
 }

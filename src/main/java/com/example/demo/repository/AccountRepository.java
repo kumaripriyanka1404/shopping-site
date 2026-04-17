@@ -10,5 +10,5 @@ import com.example.demo.model.Account;
 public interface AccountRepository extends JpaRepository<Account, Long> {
 
 	@Query("SELECT a FROM Account a WHERE lower(a.email) = lower(:email) limit 1")
-	Account findByEmail(String email);
+	Account findFirstByEmailIgnoreCase(String email);
 }
